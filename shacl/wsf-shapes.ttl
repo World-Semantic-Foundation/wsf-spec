@@ -1,0 +1,389 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix wsf: <https://world-semantic-foundation.org/ns/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+################################################################################
+# WSF Concept Shape
+#
+# Implements ADR-WSF-18 (Concept Identity) and ADR-WSF-20 (Concept Definition
+# Model) as SHACL shapes for validation of WSF Concept representations.
+#
+# This shape SHALL be applied to all concept instances in the WSF knowledge
+# graph to ensure conformance to the canonical concept structure.
+################################################################################
+
+wsf:ConceptShape a sh:NodeShape ;
+    sh:targetClass wsf:Concept ;
+    sh:name "WSF Concept Shape" ;
+    sh:description "Validates that a node conforms to the WSF Concept structure" ;
+
+    # Mandatory identifiers
+    sh:property [
+        sh:path wsf:semantic_id ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:uniqueLang false ;
+        sh:message "semantic_id MUST be a CURIE of form 'prefix:LocalName'" ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:preferred_name ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:maxLength 200 ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "preferred_name MUST be a non-empty string (max 200 chars)" ;
+    ] ;
+
+    # Tier classification
+    sh:property [
+        sh:path wsf:tier ;
+        sh:datatype xsd:string ;
+        sh:in ( "Tier 1" "Tier 2" "Tier 3" ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "tier MUST be one of: Tier 1, Tier 2, Tier 3" ;
+    ] ;
+
+    # Definition
+    sh:property [
+        sh:path wsf:definition ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "definition MUST be a non-empty string" ;
+    ] ;
+
+    # Authority
+    sh:property [
+        sh:path wsf:authority ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "authority MUST be specified" ;
+    ] ;
+
+    # Semantic status (per SEMANTIC-STATUS-MODEL)
+    sh:property [
+        sh:path wsf:status ;
+        sh:datatype xsd:string ;
+        sh:in ( "Candidate" "Investigating" "Proposed" "Normative" "Deprecated" "Retired" ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "status MUST be one of the 6-stage semantic status values" ;
+    ] ;
+
+    # Version
+    sh:property [
+        sh:path wsf:version ;
+        sh:datatype xsd:string ;
+        sh:pattern "^\\d+\\.\\d+\\.\\d+$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "version MUST be a semver string (e.g. 1.0.0)" ;
+    ] ;
+
+    # Timestamps
+    sh:property [
+        sh:path wsf:created_at ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "created_at MUST be an ISO 8601 datetime" ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:modified_at ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "modified_at MUST be an ISO 8601 datetime" ;
+    ] ;
+
+    # Optional: parent concept
+    sh:property [
+        sh:path wsf:parent ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:maxCount 1 ;
+        sh:message "parent, if present, MUST be a CURIE" ;
+    ] ;
+
+    # Optional: aliases (list)
+    sh:property [
+        sh:path wsf:aliases ;
+        sh:nodeKind sh:IRI ;
+        sh:message "aliases, if present, MUST be IRIs" ;
+    ] ;
+
+    # Optional: defined_by ADRs
+    sh:property [
+        sh:path wsf:defined_by ;
+        sh:nodeKind sh:IRI ;
+        sh:message "defined_by, if present, MUST be ADRs (IRIs)" ;
+    ] ;
+
+    # Optional: related_concepts
+    sh:property [
+        sh:path wsf:related_concepts ;
+        sh:nodeKind sh:IRI ;
+        sh:message "related_concepts, if present, MUST be concept IRIs" ;
+    ] ;
+
+    # Closed shape: no additional properties allowed
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) .
+
+################################################################################
+# WSF Relationship Shape
+#
+# Implements ADR-WSF-19 (Semantic Relationship Model).
+################################################################################
+
+wsf:RelationshipShape a sh:NodeShape ;
+    sh:targetClass wsf:Relationship ;
+    sh:name "WSF Relationship Shape" ;
+    sh:description "Validates that a node conforms to the WSF Relationship structure" ;
+
+    sh:property [
+        sh:path wsf:semantic_id ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:type ;
+        sh:datatype xsd:string ;
+        sh:in ( "specialises" "generalises" "references" "depends_on"
+                "part_of" "has_part" "instantiates" "instance_of"
+                "relates" "asserts" "evidenced_by" "governed_by" ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "type MUST be one of the 12 relationship kinds" ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:subject ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:object ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:provenance ;
+        sh:node wsf:ProvenanceShape ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:validity ;
+        sh:node wsf:ValidityShape ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) .
+
+################################################################################
+# WSF Assertion Shape
+#
+# Implements ADR-WSF-22 (Assertion and Provenance Model).
+################################################################################
+
+wsf:AssertionShape a sh:NodeShape ;
+    sh:targetClass wsf:Assertion ;
+    sh:name "WSF Assertion Shape" ;
+    sh:description "Validates that a node conforms to the WSF Assertion structure" ;
+
+    sh:property [
+        sh:path wsf:semantic_id ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:subject ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:relationship ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:object ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:confidence ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:proposition ;
+        sh:node wsf:PropositionShape ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:lifecycle ;
+        sh:datatype xsd:string ;
+        sh:in ( "submitted" "under_review" "accepted" "rejected" "retired" "disputed" ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:asserted_at ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:asserted_by ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:provenance ;
+        sh:node wsf:ProvenanceShape ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:evidence ;
+        sh:node wsf:EvidenceShape ;
+    ] ;
+
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) .
+
+################################################################################
+# Supporting shapes
+################################################################################
+
+wsf:ProvenanceShape a sh:NodeShape ;
+    sh:name "WSF Provenance Shape" ;
+    sh:property [
+        sh:path wsf:actor ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:authority ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:timestamp ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+    ] ;
+    sh:closed true .
+
+wsf:ValidityShape a sh:NodeShape ;
+    sh:name "WSF Validity Shape" ;
+    sh:property [
+        sh:path wsf:valid_from ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:valid_until ;
+        sh:datatype xsd:dateTime ;
+    ] ;
+    sh:property [
+        sh:path wsf:validity_status ;
+        sh:datatype xsd:string ;
+        sh:in ( "active" "suspended" "expired" "revoked" ) ;
+        sh:minCount 1 ;
+    ] ;
+    sh:closed true .
+
+wsf:PropositionShape a sh:NodeShape ;
+    sh:name "WSF Proposition Shape" ;
+    sh:property [
+        sh:path wsf:subject ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:predicate ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:object ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:modality ;
+        sh:datatype xsd:string ;
+        sh:in ( "asserted" "negated" "conditional" "possible" "necessary" ) ;
+        sh:minCount 1 ;
+    ] ;
+    sh:closed true .
+
+wsf:EvidenceShape a sh:NodeShape ;
+    sh:name "WSF Evidence Shape" ;
+    sh:property [
+        sh:path wsf:evidence_type ;
+        sh:datatype xsd:string ;
+        sh:in ( "document" "observation" "measurement" "expert_judgement" "derivation" ) ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:location ;
+        sh:datatype xsd:anyURI ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:description ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:reliability ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+    ] ;
+    sh:closed true .

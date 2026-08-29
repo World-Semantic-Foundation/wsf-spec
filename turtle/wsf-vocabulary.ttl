@@ -1,0 +1,478 @@
+@prefix wsf: <https://world-semantic-foundation.org/ns/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+################################################################################
+# WSF Canonical Vocabulary
+#
+# Implements ADR-WSF-23 §4 (Canonical Encoding Layer) Turtle representation
+# of the 38 WSF concepts.
+#
+# Status: All 38 concepts in Baseline status per SEMANTIC-STATUS-MODEL.
+################################################################################
+
+# =============================================================================
+# Tier 1 : Foundational Concepts (12)
+# =============================================================================
+
+wsf:Entity a wsf:Concept ;
+    rdfs:label "Entity" ;
+    rdfs:comment "Anything that exists, has identity, and can be referenced. The most general concept." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    skos:exactMatch wsf:Entity .
+
+wsf:Concept a wsf:Concept ;
+    rdfs:label "Concept" ;
+    rdfs:comment "A unit of meaning; a class or category. Concepts unify instances." ;
+    wsf:tier "Tier 1" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Relationship a wsf:Concept ;
+    rdfs:label "Relationship" ;
+    rdfs:comment "A typed association between concepts or entities." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Event a wsf:Concept ;
+    rdfs:label "Event" ;
+    rdfs:comment "An occurrence in time; something that happens." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:State a wsf:Concept ;
+    rdfs:label "State" ;
+    rdfs:comment "A condition of an entity at a point in time." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Disposition a wsf:Concept ;
+    rdfs:label "Disposition" ;
+    rdfs:comment "An intrinsic tendency or capability of an entity." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Proposition a wsf:Concept ;
+    rdfs:label "Proposition" ;
+    rdfs:comment "A statement about concepts or entities, independent of any particular assertion." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Assertion a wsf:Concept ;
+    rdfs:label "Assertion" ;
+    rdfs:comment "A claim about a relationship, with full provenance and evidence." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Identity a wsf:Concept ;
+    rdfs:label "Identity" ;
+    rdfs:comment "The persistent self-same-ness of an entity over time." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Context a wsf:Concept ;
+    rdfs:label "Context" ;
+    rdfs:comment "The surrounding circumstances that give meaning to a concept." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Time a wsf:Concept ;
+    rdfs:label "Time" ;
+    rdfs:comment "The dimension along which events are ordered." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Space a wsf:Concept ;
+    rdfs:label "Space" ;
+    rdfs:comment "The dimension in which entities are located." ;
+    wsf:tier "Tier 1" ;
+    wsf:status "Normative" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+# =============================================================================
+# Tier 2 : Supporting Constructs (9)
+# =============================================================================
+
+wsf:Identifier a wsf:Concept ;
+    rdfs:label "Identifier" ;
+    rdfs:comment "A stable, persistent, machine-readable label that uniquely references a concept." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Reference a wsf:Concept ;
+    rdfs:label "Reference" ;
+    rdfs:comment "A directed, typed association from one concept to another, supporting graph traversal and lookup." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Namespace a wsf:Concept ;
+    rdfs:label "Namespace" ;
+    rdfs:comment "A governed administrative scope that groups related identifiers." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Term a wsf:Concept ;
+    rdfs:label "Term" ;
+    rdfs:comment "A human-readable, language-bound linguistic label designating a concept." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Definition a wsf:Concept ;
+    rdfs:label "Definition" ;
+    rdfs:comment "A formal, normative specification of a concept's meaning." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Validity a wsf:Concept ;
+    rdfs:label "Validity" ;
+    rdfs:comment "The state of an assertion conforming to its governing rules at a point in time." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Evidence a wsf:Concept ;
+    rdfs:label "Evidence" ;
+    rdfs:comment "A referenceable artifact supporting the truth claim underlying an assertion." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Provenance a wsf:Concept ;
+    rdfs:label "Provenance" ;
+    rdfs:comment "The complete, traceable record of how an assertion came to be." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Authority a wsf:Concept ;
+    rdfs:label "Authority" ;
+    rdfs:comment "The recognised right and capability of an entity to make semantic assertions." ;
+    wsf:tier "Tier 2" ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+# =============================================================================
+# Tier 3 : Specialisation Concepts (16)
+# =============================================================================
+
+wsf:Role a wsf:Concept ;
+    rdfs:label "Role" ;
+    rdfs:comment "A contextualised identity that an Entity assumes within a specific context." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Process a wsf:Concept ;
+    rdfs:label "Process" ;
+    rdfs:comment "A structured, repeatable, ordered sequence of Activities that transforms inputs into outputs." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Event ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Function a wsf:Concept ;
+    rdfs:label "Function" ;
+    rdfs:comment "A purposeful kind of Activity enabled by Capability." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Disposition ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Activity a wsf:Concept ;
+    rdfs:label "Activity" ;
+    rdfs:comment "An actual occurrence of a Function by an Entity at a specific time." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Event ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Outcome a wsf:Concept ;
+    rdfs:label "Outcome" ;
+    rdfs:comment "The result produced by an Activity or Process, representing a change in State." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:State ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Resource a wsf:Concept ;
+    rdfs:label "Resource" ;
+    rdfs:comment "An Entity that is consumed, used, or produced by an Activity or Process." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:System a wsf:Concept ;
+    rdfs:label "System" ;
+    rdfs:comment "An Entity composed of interacting Components organised to perform defined Functions." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Organisation a wsf:Concept ;
+    rdfs:label "Organisation" ;
+    rdfs:comment "An Entity composed of multiple Actors pursuing shared Goals through coordinated Activities." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Service a wsf:Concept ;
+    rdfs:label "Service" ;
+    rdfs:comment "A Function exposed by an Entity for consumption by other Entities." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Function ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Goal a wsf:Concept ;
+    rdfs:label "Goal" ;
+    rdfs:comment "A desired Outcome expressed as a Proposition." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Proposition ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Policy a wsf:Concept ;
+    rdfs:label "Policy" ;
+    rdfs:comment "A Rule governing Entity behaviour within an Organisation." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Rule ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Rule a wsf:Concept ;
+    rdfs:label "Rule" ;
+    rdfs:comment "A normative Constraint on Entity behaviour or State." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Constraint ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Constraint a wsf:Concept ;
+    rdfs:label "Constraint" ;
+    rdfs:comment "A limiting condition on an Entity, Activity, or State." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Proposition ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Objective a wsf:Concept ;
+    rdfs:label "Objective" ;
+    rdfs:comment "A Goal with explicit success criteria and time-bound target." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Goal ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Measure a wsf:Concept ;
+    rdfs:label "Measure" ;
+    rdfs:comment "A Proposition expressing a quantitative or qualitative observation." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Proposition ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Actor a wsf:Concept ;
+    rdfs:label "Actor" ;
+    rdfs:comment "An Entity that performs Activities, makes Assertions, or bears Responsibilities." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Entity ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+wsf:Capability a wsf:Concept ;
+    rdfs:label "Capability" ;
+    rdfs:comment "The middle-layer chain: Entity : Role : Capacity : Ability : Capability : Function : Outcome : Value." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Disposition ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
+
+# =============================================================================
+# Relationship kinds (per ADR-WSF-19)
+# =============================================================================
+
+wsf:specialises a wsf:RelationshipKind ;
+    rdfs:label "specialises" ;
+    rdfs:comment "A Concept is a specialisation of a parent Concept." .
+
+wsf:generalises a wsf:RelationshipKind ;
+    rdfs:label "generalises" ;
+    rdfs:comment "Inverse of specialises." .
+
+wsf:references a wsf:RelationshipKind ;
+    rdfs:label "references" ;
+    rdfs:comment "A Concept or Entity references another via an Identifier." .
+
+wsf:depends_on a wsf:RelationshipKind ;
+    rdfs:label "depends_on" ;
+    rdfs:comment "A Concept or Entity depends on another for its existence or operation." .
+
+wsf:part_of a wsf:RelationshipKind ;
+    rdfs:label "part_of" ;
+    rdfs:comment "A Concept or Entity is a part of a larger whole." .
+
+wsf:has_part a wsf:RelationshipKind ;
+    rdfs:label "has_part" ;
+    rdfs:comment "Inverse of part_of." .
+
+wsf:instantiates a wsf:RelationshipKind ;
+    rdfs:label "instantiates" ;
+    rdfs:comment "An Entity instantiates a Concept." .
+
+wsf:instance_of a wsf:RelationshipKind ;
+    rdfs:label "instance_of" ;
+    rdfs:comment "Inverse of instantiates." .
+
+wsf:relates a wsf:RelationshipKind ;
+    rdfs:label "relates" ;
+    rdfs:comment "A generic typed relationship between Concepts or Entities." .
+
+wsf:asserts a wsf:RelationshipKind ;
+    rdfs:label "asserts" ;
+    rdfs:comment "An Actor asserts a Proposition about something." .
+
+wsf:evidenced_by a wsf:RelationshipKind ;
+    rdfs:label "evidenced_by" ;
+    rdfs:comment "An Assertion is evidenced by an Evidence reference." .
+
+wsf:governed_by a wsf:RelationshipKind ;
+    rdfs:label "governed_by" ;
+    rdfs:comment "An Entity is governed by an Authority or Policy." .

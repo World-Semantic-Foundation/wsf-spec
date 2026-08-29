@@ -1,0 +1,449 @@
+// =============================================================================
+// WSF Semantic Engine : Protocol Buffers Schema
+//
+// Implements ADR-WSF-24 §7.2 (gRPC API). Protobuf definitions for the
+// WSF Semantic Engine service interfaces.
+//
+// These definitions SHALL be the canonical wire format for high-throughput
+// gRPC consumers per ADR-WSF-24.
+// =============================================================================
+
+syntax = "proto3";
+
+package wsf.semantic.v1;
+
+option java_package = "org.worldsemanticfoundation.semantic.v1";
+option go_package = "github.com/world-semantic-foundation/wsf-software/proto/v1";
+
+// =============================================================================
+// Identifier types
+// =============================================================================
+
+// A CURIE-form compact URI per ADR-WSF-21
+message Curie {
+  string value = 1; // e.g. "wsf:Entity"
+}
+
+// A timestamp per ISO 8601
+message Timestamp {
+  string iso8601 = 1; // e.g. "2026-08-29T10:00:00Z"
+}
+
+// An IRI (Internationalised Resource Identifier)
+message Iri {
+  string value = 1;
+}
+
+// =============================================================================
+// Semantic status (per SEMANTIC-STATUS-MODEL)
+// =============================================================================
+
+enum SemanticStatus {
+  SEMANTIC_STATUS_UNSPECIFIED = 0;
+  SEMANTIC_STATUS_CANDIDATE = 1;
+  SEMANTIC_STATUS_INVESTIGATING = 2;
+  SEMANTIC_STATUS_PROPOSED = 3;
+  SEMANTIC_STATUS_NORMATIVE = 4;
+  SEMANTIC_STATUS_DEPRECATED = 5;
+  SEMANTIC_STATUS_RETIRED = 6;
+}
+
+enum ConceptTier {
+  CONCEPT_TIER_UNSPECIFIED = 0;
+  CONCEPT_TIER_1 = 1;
+  CONCEPT_TIER_2 = 2;
+  CONCEPT_TIER_3 = 3;
+}
+
+// =============================================================================
+// Core entities
+// =============================================================================
+
+// Provenance per ADR-WSF-22
+message Provenance {
+  Curie actor = 1;
+  Curie authority = 2;
+  Timestamp timestamp = 3;
+  Curie method = 4;
+  repeated Curie derived_from = 5;
+  string version = 6;
+  string notes = 7;
+}
+
+// Validity per wsf:Validity
+message Validity {
+  Timestamp valid_from = 1;
+  Timestamp valid_until = 2; // empty = indefinite
+  ValidityStatus status = 3;
+}
+
+enum ValidityStatus {
+  VALIDITY_STATUS_UNSPECIFIED = 0;
+  VALIDITY_STATUS_ACTIVE = 1;
+  VALIDITY_STATUS_SUSPENDED = 2;
+  VALIDITY_STATUS_EXPIRED = 3;
+  VALIDITY_STATUS_REVOKED = 4;
+}
+
+// Proposition per wsf:Proposition
+message Proposition {
+  Curie semantic_id = 1;
+  Curie subject = 2;
+  string predicate = 3;
+  Curie object = 4;
+  Modality modality = 5;
+  string qualifier = 6;
+}
+
+enum Modality {
+  MODALITY_UNSPECIFIED = 0;
+  MODALITY_ASSERTED = 1;
+  MODALITY_NEGATED = 2;
+  MODALITY_CONDITIONAL = 3;
+  MODALITY_POSSIBLE = 4;
+  MODALITY_NECESSARY = 5;
+}
+
+// Evidence per wsf:Evidence
+message Evidence {
+  Curie semantic_id = 1;
+  EvidenceType type = 2;
+  Iri location = 3;
+  string description = 4;
+  float reliability = 5;
+  Provenance provenance = 6;
+}
+
+enum EvidenceType {
+  EVIDENCE_TYPE_UNSPECIFIED = 0;
+  EVIDENCE_TYPE_DOCUMENT = 1;
+  EVIDENCE_TYPE_OBSERVATION = 2;
+  EVIDENCE_TYPE_MEASUREMENT = 3;
+  EVIDENCE_TYPE_EXPERT_JUDGEMENT = 4;
+  EVIDENCE_TYPE_DERIVATION = 5;
+}
+
+// Concept per ADR-WSF-18, ADR-WSF-20
+message Concept {
+  Curie semantic_id = 1;
+  string preferred_name = 2;
+  repeated string aliases = 3;
+  ConceptTier tier = 4;
+  Curie parent = 5;
+  string definition = 6;
+  string definition_markdown = 7;
+  string differentia = 8;
+  string scope_notes = 9;
+  repeated string counter_examples = 10;
+  repeated string canonical_examples = 11;
+  string authority = 12;
+  SemanticStatus status = 13;
+  string version = 14;
+  repeated string defined_by = 15;
+  repeated Curie related_concepts = 16;
+  Timestamp created_at = 17;
+  Timestamp modified_at = 18;
+}
+
+// Relationship per ADR-WSF-19
+enum RelationshipKind {
+  RELATIONSHIP_KIND_UNSPECIFIED = 0;
+  RELATIONSHIP_KIND_SPECIALISES = 1;
+  RELATIONSHIP_KIND_GENERALISES = 2;
+  RELATIONSHIP_KIND_REFERENCES = 3;
+  RELATIONSHIP_KIND_DEPENDS_ON = 4;
+  RELATIONSHIP_KIND_PART_OF = 5;
+  RELATIONSHIP_KIND_HAS_PART = 6;
+  RELATIONSHIP_KIND_INSTANTIATES = 7;
+  RELATIONSHIP_KIND_INSTANCE_OF = 8;
+  RELATIONSHIP_KIND_RELATES = 9;
+  RELATIONSHIP_KIND_ASSERTS = 10;
+  RELATIONSHIP_KIND_EVIDENCED_BY = 11;
+  RELATIONSHIP_KIND_GOVERNED_BY = 12;
+}
+
+message Cardinality {
+  int32 min = 1;
+  int32 max = 2;
+}
+
+message Relationship {
+  Curie semantic_id = 1;
+  RelationshipKind type = 2;
+  Curie subject = 3;
+  Curie object = 4;
+  Curie context = 5;
+  Cardinality cardinality = 6;
+  map<string, string> attributes = 7;
+  Provenance provenance = 8;
+  Validity validity = 9;
+}
+
+// Assertion per ADR-WSF-22
+enum AssertionLifecycle {
+  ASSERTION_LIFECYCLE_UNSPECIFIED = 0;
+  ASSERTION_LIFECYCLE_SUBMITTED = 1;
+  ASSERTION_LIFECYCLE_UNDER_REVIEW = 2;
+  ASSERTION_LIFECYCLE_ACCEPTED = 3;
+  ASSERTION_LIFECYCLE_REJECTED = 4;
+  ASSERTION_LIFECYCLE_RETIRED = 5;
+  ASSERTION_LIFECYCLE_DISPUTED = 6;
+}
+
+message Assertion {
+  Curie semantic_id = 1;
+  Curie subject = 2;
+  RelationshipKind relationship = 3;
+  Curie object = 4;
+  float confidence = 5;
+  Curie context = 6;
+  Proposition proposition = 7;
+  repeated Evidence evidence = 8;
+  Provenance provenance = 9;
+  Validity validity = 10;
+  AssertionLifecycle lifecycle = 11;
+  Timestamp asserted_at = 12;
+  Curie asserted_by = 13;
+}
+
+// Namespace per ADR-WSF-21
+message Namespace {
+  string prefix = 1;
+  Iri iri = 2;
+  string authority = 3;
+  SemanticStatus status = 4;
+  Timestamp registered_at = 5;
+}
+
+// Audit entry per ADR-WSF-24 §6.8
+enum AuditAction {
+  AUDIT_ACTION_UNSPECIFIED = 0;
+  AUDIT_ACTION_CREATE = 1;
+  AUDIT_ACTION_UPDATE = 2;
+  AUDIT_ACTION_DELETE = 3;
+  AUDIT_ACTION_VALIDATE = 4;
+  AUDIT_ACTION_SUBMIT = 5;
+  AUDIT_ACTION_ACCEPT = 6;
+  AUDIT_ACTION_REJECT = 7;
+  AUDIT_ACTION_RETIRE = 8;
+}
+
+message AuditEntry {
+  Curie semantic_id = 1;
+  AuditAction action = 2;
+  Curie affected = 3;
+  Curie actor = 4;
+  Timestamp timestamp = 5;
+  string before = 6;  // JSON-serialised
+  string after = 7;   // JSON-serialised
+  string rationale = 8;
+}
+
+// =============================================================================
+// Request/Response messages
+// =============================================================================
+
+message GetConceptRequest {
+  Curie semantic_id = 1;
+}
+
+message GetConceptResponse {
+  Concept concept = 1;
+}
+
+message ListConceptsRequest {
+  ConceptTier tier = 1;
+  Curie parent = 2;
+  SemanticStatus status = 3;
+  string authority = 4;
+  string search = 5;
+  int32 offset = 6;
+  int32 limit = 7;
+}
+
+message ListConceptsResponse {
+  repeated Concept concepts = 1;
+  int32 total_count = 2;
+}
+
+message CreateConceptRequest {
+  Concept concept = 1;
+}
+
+message CreateConceptResponse {
+  Concept concept = 1;
+}
+
+message DeclareRelationshipRequest {
+  Relationship relationship = 1;
+}
+
+message DeclareRelationshipResponse {
+  Relationship relationship = 1;
+}
+
+message FindRelationshipsRequest {
+  RelationshipKind type = 1;
+  Curie subject = 2;
+  Curie object = 3;
+  Curie context = 4;
+  bool active_only = 5;
+}
+
+message FindRelationshipsResponse {
+  repeated Relationship relationships = 1;
+}
+
+message SubmitAssertionRequest {
+  Assertion assertion = 1;
+}
+
+message SubmitAssertionResponse {
+  Assertion assertion = 1;
+}
+
+message ResolveIdentifierRequest {
+  Curie curie = 1;
+  ResolutionStrategy strategy = 2;
+  Curie context = 3;
+}
+
+enum ResolutionStrategy {
+  RESOLUTION_STRATEGY_UNSPECIFIED = 0;
+  RESOLUTION_STRATEGY_EXACT = 1;
+  RESOLUTION_STRATEGY_PREFIX_WILDCARD = 2;
+  RESOLUTION_STRATEGY_CROSS_NAMESPACE = 3;
+  RESOLUTION_STRATEGY_CANONICAL = 4;
+}
+
+message ResolveIdentifierResponse {
+  Curie curie = 1;
+  Curie resolved_to = 2;
+  float confidence = 3;
+  ResolutionStrategy strategy = 4;
+  repeated Curie alternatives = 5;
+}
+
+message ValidateRequest {
+  repeated Representation representations = 1;
+  ValidationLanguage language = 2;
+  repeated Curie shapes = 3;
+}
+
+enum ValidationLanguage {
+  VALIDATION_LANGUAGE_UNSPECIFIED = 0;
+  VALIDATION_LANGUAGE_SHACL = 1;
+  VALIDATION_LANGUAGE_SHEX = 2;
+}
+
+message Representation {
+  Curie semantic_id = 1;
+  Curie subject = 2;
+  string format = 3;
+  bytes content = 4;
+  string media_type = 5;
+  Timestamp encoded_at = 6;
+  Curie encoded_by = 7;
+}
+
+message ValidationResult {
+  Curie representation = 1;
+  Severity severity = 2;
+  string path = 3;
+  string message = 4;
+  Curie shape = 5;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_VIOLATION = 1;
+  SEVERITY_WARNING = 2;
+  SEVERITY_INFO = 3;
+}
+
+message ValidateResponse {
+  repeated ValidationResult results = 1;
+  bool conforms = 2;
+  int32 validation_time_ms = 3;
+}
+
+message ExplainInferenceRequest {
+  Curie concept_id = 1;
+}
+
+message ExplainInferenceResponse {
+  repeated string steps = 1;
+}
+
+message QueryAuditRequest {
+  Curie affected = 1;
+  Curie actor = 2;
+  Timestamp after = 3;
+  Timestamp before = 4;
+}
+
+message QueryAuditResponse {
+  repeated AuditEntry entries = 1;
+}
+
+// =============================================================================
+// Streaming messages for change notifications
+// =============================================================================
+
+message ConceptChangeNotification {
+  Curie semantic_id = 1;
+  ChangeType change_type = 2;
+  Concept concept = 3;
+  Provenance provenance = 4;
+}
+
+enum ChangeType {
+  CHANGE_TYPE_UNSPECIFIED = 0;
+  CHANGE_TYPE_CREATED = 1;
+  CHANGE_TYPE_UPDATED = 2;
+  CHANGE_TYPE_DELETED = 3;
+  CHANGE_TYPE_RETIRED = 4;
+}
+
+// =============================================================================
+// Services
+// =============================================================================
+
+// Concept Service
+service ConceptService {
+  rpc GetConcept(GetConceptRequest) returns (GetConceptResponse);
+  rpc ListConcepts(ListConceptsRequest) returns (ListConceptsResponse);
+  rpc CreateConcept(CreateConceptRequest) returns (CreateConceptResponse);
+  rpc StreamConceptChanges(stream ConceptChangeNotification) returns (stream ConceptChangeNotification);
+}
+
+// Relationship Service
+service RelationshipService {
+  rpc DeclareRelationship(DeclareRelationshipRequest) returns (DeclareRelationshipResponse);
+  rpc FindRelationships(FindRelationshipsRequest) returns (FindRelationshipsResponse);
+}
+
+// Assertion Service
+service AssertionService {
+  rpc SubmitAssertion(SubmitAssertionRequest) returns (SubmitAssertionResponse);
+}
+
+// Identity Service
+service IdentityService {
+  rpc ResolveIdentifier(ResolveIdentifierRequest) returns (ResolveIdentifierResponse);
+}
+
+// Validation Service
+service ValidationService {
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+}
+
+// Inference Service
+service InferenceService {
+  rpc ExplainInference(ExplainInferenceRequest) returns (ExplainInferenceResponse);
+}
+
+// Audit Service
+service AuditService {
+  rpc QueryAudit(QueryAuditRequest) returns (QueryAuditResponse);
+}

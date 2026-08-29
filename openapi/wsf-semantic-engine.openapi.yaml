@@ -1,0 +1,619 @@
+openapi: 3.1.0
+info:
+  title: WSF Semantic Engine REST API
+  description: |
+    Normative OpenAPI specification for the WSF Semantic Engine REST API.
+
+    Implements ADR-WSF-24 §7.1 (REST API). Resource-oriented URLs, JSON-LD
+    request and response bodies, OAuth 2.0 + OpenID Connect authentication,
+    RBAC authorisation.
+
+    The API exposes the 8 service modules of the WSF Semantic Engine:
+    Concept, Relationship, Assertion, Identity, Validation, Inference,
+    Query, and Audit.
+  version: 0.1.0
+  contact:
+    name: World Semantic Foundation
+    url: https://github.com/World-Semantic-Foundation
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: https://api.wsf.example/v1
+    description: Production
+  - url: https://staging-api.wsf.example/v1
+    description: Staging
+  - url: http://localhost:8080/v1
+    description: Local development
+
+security:
+  - OAuth2: [concept:read, concept:write, assertion:submit, assertion:read]
+  - APIKey: []
+
+tags:
+  - name: Concepts
+    description: Concept Service ; create, retrieve, update, delete, list, specialise, retire concepts
+  - name: Relationships
+    description: Relationship Service ; declare, find, traverse relationship graphs
+  - name: Assertions
+    description: Assertion Service ; submit, retrieve, accept, reject assertions
+  - name: Identifiers
+    description: Identity Service ; namespace registration, CURIE resolution
+  - name: Validation
+    description: Validation Service ; SHACL validation of representations
+  - name: Inference
+    description: Inference Service ; OWL 2 RL entailment, explanation traces
+  - name: Query
+    description: Query Service ; pattern, graph, semantic, fulltext queries
+  - name: Audit
+    description: Audit Service ; record and query audit trail
+
+paths:
+  /concepts/{semantic_id}:
+    get:
+      tags: [Concepts]
+      operationId: getConcept
+      summary: Retrieve a concept
+      description: Returns the concept identified by the given semantic_id (CURIE).
+      parameters:
+        - name: semantic_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$'
+          examples:
+            entity: { value: 'wsf:Entity' }
+            concept: { value: 'wsf:Concept' }
+      responses:
+        '200':
+          description: Concept found
+          content:
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Concept'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /concepts:
+    get:
+      tags: [Concepts]
+      operationId: listConcepts
+      summary: List concepts
+      description: |
+        Returns a list of concepts, optionally filtered by tier, parent,
+        status, or authority.
+      parameters:
+        - name: tier
+          in: query
+          schema:
+            type: string
+            enum: [Tier 1, Tier 2, Tier 3]
+        - name: parent
+          in: query
+          schema:
+            type: string
+            pattern: '^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Candidate, Investigating, Proposed, Normative, Deprecated, Retired]
+        - name: authority
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: offset
+          in: query
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 1000, default: 100 }
+      responses:
+        '200':
+          description: Concept list
+          content:
+            application/ld+json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Concept' }
+
+    post:
+      tags: [Concepts]
+      operationId: createConcept
+      summary: Create a new concept
+      description: Creates a new concept in the WSF Semantic Engine.
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/Concept' }
+      responses:
+        '201':
+          description: Concept created
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/Concept' }
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /relationships:
+    get:
+      tags: [Relationships]
+      operationId: findRelationships
+      summary: Find relationships
+      description: Returns relationships filtered by type, subject, object, context.
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [specialises, generalises, references, depends_on, part_of, has_part, instantiates, instance_of, relates, asserts, evidenced_by, governed_by]
+        - name: subject
+          in: query
+          schema: { type: string }
+        - name: object
+          in: query
+          schema: { type: string }
+        - name: context
+          in: query
+          schema: { type: string }
+        - name: active_only
+          in: query
+          schema: { type: boolean, default: true }
+      responses:
+        '200':
+          description: Relationship list
+          content:
+            application/ld+json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Relationship' }
+
+    post:
+      tags: [Relationships]
+      operationId: declareRelationship
+      summary: Declare a relationship
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/Relationship' }
+      responses:
+        '201':
+          description: Relationship declared
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/Relationship' }
+
+  /assertions:
+    post:
+      tags: [Assertions]
+      operationId: submitAssertion
+      summary: Submit an assertion
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/Assertion' }
+      responses:
+        '201':
+          description: Assertion submitted
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/Assertion' }
+
+  /assertions/{semantic_id}:
+    get:
+      tags: [Assertions]
+      operationId: getAssertion
+      summary: Retrieve an assertion
+      parameters:
+        - name: semantic_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Assertion found
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/Assertion' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /validate:
+    post:
+      tags: [Validation]
+      operationId: validateRepresentation
+      summary: Run SHACL or ShEx validation
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/ValidationRequest' }
+      responses:
+        '200':
+          description: Validation report
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/ValidationReport' }
+
+  /namespaces:
+    get:
+      tags: [Identifiers]
+      operationId: listNamespaces
+      summary: List registered namespaces
+      responses:
+        '200':
+          description: Namespace list
+          content:
+            application/ld+json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Namespace' }
+    post:
+      tags: [Identifiers]
+      operationId: registerNamespace
+      summary: Register a namespace
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/Namespace' }
+      responses:
+        '201':
+          description: Namespace registered
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/Namespace' }
+
+  /resolve:
+    post:
+      tags: [Identifiers]
+      operationId: resolveIdentifier
+      summary: Resolve a CURIE identifier
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema: { $ref: '#/components/schemas/IdentifierResolution' }
+      responses:
+        '200':
+          description: Resolution result
+          content:
+            application/ld+json:
+              schema: { $ref: '#/components/schemas/IdentifierResolutionResult' }
+
+  /inference/explain:
+    post:
+      tags: [Inference]
+      operationId: explainInference
+      summary: Explain a concept derivation chain
+      requestBody:
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              properties:
+                concept_id:
+                  type: string
+                  pattern: '^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$'
+              required: [concept_id]
+      responses:
+        '200':
+          description: Explanation steps
+          content:
+            application/ld+json:
+              schema:
+                type: object
+                properties:
+                  steps:
+                    type: array
+                    items: { type: string }
+
+  /audit:
+    get:
+      tags: [Audit]
+      operationId: queryAudit
+      summary: Query the audit trail
+      parameters:
+        - name: affected
+          in: query
+          schema: { type: string }
+        - name: actor
+          in: query
+          schema: { type: string }
+        - name: after
+          in: query
+          schema: { type: string, format: date-time }
+        - name: before
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: Audit entries
+          content:
+            application/ld+json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditEntry' }
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.wsf.example/oauth/authorize
+          tokenUrl: https://auth.wsf.example/oauth/token
+          scopes:
+            concept:read: Read concept data
+            concept:write: Create, update, delete concepts
+            assertion:submit: Submit assertions
+            assertion:read: Read assertions
+    APIKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    Concept:
+      type: object
+      required: [semantic_id, preferred_name, tier, definition, authority, status, version, created_at, modified_at]
+      properties:
+        semantic_id: { type: string, pattern: '^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$' }
+        preferred_name: { type: string, minLength: 1, maxLength: 200 }
+        aliases:
+          type: array
+          items: { type: string }
+        tier:
+          type: string
+          enum: [Tier 1, Tier 2, Tier 3]
+        parent: { type: string }
+        definition: { type: string, minLength: 1 }
+        definition_markdown: { type: string }
+        differentia: { type: string }
+        scope_notes: { type: string }
+        counter_examples:
+          type: array
+          items: { type: string }
+        canonical_examples:
+          type: array
+          items: { type: string }
+        authority: { type: string }
+        status:
+          type: string
+          enum: [Candidate, Investigating, Proposed, Normative, Deprecated, Retired]
+        version: { type: string, pattern: '^\d+\.\d+\.\d+$' }
+        defined_by:
+          type: array
+          items: { type: string }
+        related_concepts:
+          type: array
+          items: { type: string }
+        created_at: { type: string, format: date-time }
+        modified_at: { type: string, format: date-time }
+
+    Relationship:
+      type: object
+      required: [semantic_id, type, subject, object, provenance]
+      properties:
+        semantic_id: { type: string }
+        type:
+          type: string
+          enum: [specialises, generalises, references, depends_on, part_of, has_part, instantiates, instance_of, relates, asserts, evidenced_by, governed_by]
+        subject: { type: string }
+        object: { type: string }
+        context: { type: string }
+        cardinality:
+          type: object
+          properties:
+            min: { type: integer, minimum: 0 }
+            max: { type: integer, minimum: 0 }
+        attributes:
+          type: object
+          additionalProperties: true
+        provenance: { $ref: '#/components/schemas/Provenance' }
+        validity: { $ref: '#/components/schemas/Validity' }
+
+    Assertion:
+      type: object
+      required: [semantic_id, subject, relationship, object, proposition, provenance, lifecycle, asserted_at, asserted_by]
+      properties:
+        semantic_id: { type: string }
+        subject: { type: string }
+        relationship: { type: string }
+        object: { type: string }
+        confidence: { type: number, minimum: 0.0, maximum: 1.0 }
+        context: { type: string }
+        proposition: { $ref: '#/components/schemas/Proposition' }
+        evidence:
+          type: array
+          items: { $ref: '#/components/schemas/Evidence' }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+        validity: { $ref: '#/components/schemas/Validity' }
+        lifecycle:
+          type: string
+          enum: [submitted, under_review, accepted, rejected, retired, disputed]
+        asserted_at: { type: string, format: date-time }
+        asserted_by: { type: string }
+
+    Proposition:
+      type: object
+      required: [semantic_id, subject, predicate, object, modality]
+      properties:
+        semantic_id: { type: string }
+        subject: { type: string }
+        predicate: { type: string }
+        object: { type: string }
+        modality:
+          type: string
+          enum: [asserted, negated, conditional, possible, necessary]
+        qualifier: { type: string }
+
+    Provenance:
+      type: object
+      required: [actor, authority, timestamp]
+      properties:
+        actor: { type: string }
+        authority: { type: string }
+        timestamp: { type: string, format: date-time }
+        method: { type: string }
+        derived_from:
+          type: array
+          items: { type: string }
+        version: { type: string }
+        notes: { type: string }
+
+    Validity:
+      type: object
+      required: [valid_from, valid_until, status]
+      properties:
+        valid_from: { type: string, format: date-time }
+        valid_until:
+          type: [string, 'null']
+          format: date-time
+        status:
+          type: string
+          enum: [active, suspended, expired, revoked]
+
+    Evidence:
+      type: object
+      required: [semantic_id, type, location, description, provenance]
+      properties:
+        semantic_id: { type: string }
+        type:
+          type: string
+          enum: [document, observation, measurement, expert_judgement, derivation]
+        location: { type: string, format: uri }
+        description: { type: string }
+        reliability: { type: number, minimum: 0.0, maximum: 1.0 }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+
+    Namespace:
+      type: object
+      required: [prefix, iri, authority, status, registered_at]
+      properties:
+        prefix: { type: string }
+        iri: { type: string, format: uri }
+        authority: { type: string }
+        status:
+          type: string
+          enum: [Candidate, Investigating, Proposed, Normative, Deprecated, Retired]
+        registered_at: { type: string, format: date-time }
+
+    IdentifierResolution:
+      type: object
+      required: [curie, strategy]
+      properties:
+        curie: { type: string }
+        strategy:
+          type: string
+          enum: [exact, prefix_wildcard, cross_namespace, canonical]
+        context: { type: string }
+
+    IdentifierResolutionResult:
+      type: object
+      required: [curie, confidence, strategy]
+      properties:
+        curie: { type: string }
+        resolved_to: { type: string }
+        confidence: { type: number, minimum: 0.0, maximum: 1.0 }
+        strategy: { type: string }
+        alternatives:
+          type: array
+          items: { type: string }
+
+    ValidationRequest:
+      type: object
+      required: [representations, language]
+      properties:
+        representations:
+          type: array
+          items:
+            type: object
+            required: [semantic_id, subject, format, content, media_type, encoded_at, encoded_by]
+            properties:
+              semantic_id: { type: string }
+              subject: { type: string }
+              format: { type: string }
+              content: { type: string }
+              media_type: { type: string }
+              encoded_at: { type: string, format: date-time }
+              encoded_by: { type: string }
+        language:
+          type: string
+          enum: [shacl, shex]
+        shapes:
+          type: array
+          items: { type: string }
+
+    ValidationReport:
+      type: object
+      required: [results, conforms, validation_time_ms]
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              representation: { type: string }
+              severity:
+                type: string
+                enum: [violation, warning, info]
+              path: { type: string }
+              message: { type: string }
+              shape: { type: string }
+        conforms: { type: boolean }
+        validation_time_ms: { type: integer }
+
+    AuditEntry:
+      type: object
+      required: [semantic_id, action, affected, actor, timestamp]
+      properties:
+        semantic_id: { type: string }
+        action:
+          type: string
+          enum: [create, update, delete, validate, submit, accept, reject, retire]
+        affected: { type: string }
+        actor: { type: string }
+        timestamp: { type: string, format: date-time }
+        before: { }
+        after: { }
+        rationale: { type: string }
+
+    APIError:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        details: { }
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/ld+json:
+          schema: { $ref: '#/components/schemas/APIError' }
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/ld+json:
+          schema: { $ref: '#/components/schemas/APIError' }
+    ValidationError:
+      description: Validation failure
+      content:
+        application/ld+json:
+          schema: { $ref: '#/components/schemas/APIError' }
