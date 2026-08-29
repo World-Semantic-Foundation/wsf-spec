@@ -2,7 +2,7 @@
 
 > **The normative, machine-readable specifications of WSF semantics.**
 
-This repository (`wsf-spec/`) contains the formal specifications that downstream implementations must conform to. Per CR-WSF-17 Rev.1, WSF maintains **platform neutrality** — these specifications describe what must be true, not how to implement it.
+This repository (`wsf-spec/`) contains the formal specifications that downstream implementations must conform to. Per CR-WSF-17 Rev.1, WSF maintains **platform neutrality** : these specifications describe what must be true, not how to implement it.
 
 ---
 
@@ -59,10 +59,10 @@ This repository is being established per CR-WSF-17 Rev.1. Initial specifications
 
 ## Related Repositories
 
-- [wsf/](../wsf/) — Canonical semantic assets
-- [wsf-governance/](../wsf-governance/) — ADRs, CRs
-- [wsf-software/](../wsf-software/) — Engine implementation
-- [wsf-examples/](../wsf-examples/) — Reference applications
+- [wsf/](../wsf/) : Canonical semantic assets
+- [wsf-governance/](../wsf-governance/) : ADRs, CRs
+- [wsf-software/](../wsf-software/) : Engine implementation
+- [wsf-examples/](../wsf-examples/) : Reference applications
 
 ---
 
