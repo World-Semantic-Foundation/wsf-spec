@@ -134,6 +134,35 @@ wsf:ConceptShape a sh:NodeShape ;
         sh:message "related_concepts, if present, MUST be concept IRIs" ;
     ] ;
 
+    # Optional documentation fields (per engine Concept type model)
+    sh:property [
+        sh:path wsf:definition_markdown ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:differentia ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:scope_notes ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:counter_examples ;
+        sh:datatype xsd:string ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:canonical_examples ;
+        sh:datatype xsd:string ;
+    ] ;
+
     # Closed shape: no additional properties allowed
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) .
@@ -193,6 +222,23 @@ wsf:RelationshipShape a sh:NodeShape ;
     sh:property [
         sh:path wsf:validity ;
         sh:node wsf:ValidityShape ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:context ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:cardinality ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:attributes ;
         sh:maxCount 1 ;
     ] ;
 
@@ -288,6 +334,19 @@ wsf:AssertionShape a sh:NodeShape ;
         sh:node wsf:EvidenceShape ;
     ] ;
 
+    sh:property [
+        sh:path wsf:context ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:maxCount 1 ;
+    ] ;
+
+    sh:property [
+        sh:path wsf:validity ;
+        sh:node wsf:ValidityShape ;
+        sh:maxCount 1 ;
+    ] ;
+
     sh:closed true ;
     sh:ignoredProperties ( rdf:type ) .
 
@@ -314,6 +373,27 @@ wsf:ProvenanceShape a sh:NodeShape ;
         sh:datatype xsd:dateTime ;
         sh:minCount 1 ;
     ] ;
+    sh:property [
+        sh:path wsf:method ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:derived_from ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+    ] ;
+    sh:property [
+        sh:path wsf:version ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:notes ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
     sh:closed true .
 
 wsf:ValidityShape a sh:NodeShape ;
@@ -328,7 +408,7 @@ wsf:ValidityShape a sh:NodeShape ;
         sh:datatype xsd:dateTime ;
     ] ;
     sh:property [
-        sh:path wsf:validity_status ;
+        sh:path wsf:status ;
         sh:datatype xsd:string ;
         sh:in ( "active" "suspended" "expired" "revoked" ) ;
         sh:minCount 1 ;
@@ -338,6 +418,13 @@ wsf:ValidityShape a sh:NodeShape ;
 wsf:PropositionShape a sh:NodeShape ;
     sh:name "WSF Proposition Shape" ;
     sh:property [
+        sh:path wsf:semantic_id ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
         sh:path wsf:subject ;
         sh:datatype xsd:string ;
         sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
@@ -346,6 +433,9 @@ wsf:PropositionShape a sh:NodeShape ;
     sh:property [
         sh:path wsf:predicate ;
         sh:datatype xsd:string ;
+        sh:in ( "specialises" "generalises" "references" "depends_on"
+                "part_of" "has_part" "instantiates" "instance_of"
+                "relates" "asserts" "evidenced_by" "governed_by" ) ;
         sh:minCount 1 ;
     ] ;
     sh:property [
@@ -360,12 +450,24 @@ wsf:PropositionShape a sh:NodeShape ;
         sh:in ( "asserted" "negated" "conditional" "possible" "necessary" ) ;
         sh:minCount 1 ;
     ] ;
+    sh:property [
+        sh:path wsf:qualifier ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+    ] ;
     sh:closed true .
 
 wsf:EvidenceShape a sh:NodeShape ;
     sh:name "WSF Evidence Shape" ;
     sh:property [
-        sh:path wsf:evidence_type ;
+        sh:path wsf:semantic_id ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_-]*:[A-Za-z][A-Za-z0-9_]*$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path wsf:type ;
         sh:datatype xsd:string ;
         sh:in ( "document" "observation" "measurement" "expert_judgement" "derivation" ) ;
         sh:minCount 1 ;
@@ -385,5 +487,11 @@ wsf:EvidenceShape a sh:NodeShape ;
         sh:datatype xsd:decimal ;
         sh:minInclusive 0.0 ;
         sh:maxInclusive 1.0 ;
+    ] ;
+    sh:property [
+        sh:path wsf:provenance ;
+        sh:node wsf:ProvenanceShape ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
     ] ;
     sh:closed true .
