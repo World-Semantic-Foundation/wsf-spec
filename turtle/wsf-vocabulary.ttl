@@ -337,6 +337,18 @@ wsf:Service a wsf:Concept ;
     dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
 
+wsf:Product a wsf:Concept ;
+    rdfs:label "Product" ;
+    rdfs:comment "A coherent, governable bundle of Functions and Services offered by an Entity for exchange, consumption, or value realization by other Entities." ;
+    wsf:tier "Tier 3" ;
+    wsf:parent wsf:Function ;
+    wsf:status "Baseline" ;
+    wsf:authority "WSF" ;
+    wsf:version "1.0.0" ;
+    dcterms:created "2026-09-26T00:00:00Z"^^xsd:dateTime ;
+    dcterms:modified "2026-09-26T00:00:00Z"^^xsd:dateTime .
+    # per ADR-WSF-36 (Product Semantic Grounding) + CR-WSF-36
+
 wsf:Goal a wsf:Concept ;
     rdfs:label "Goal" ;
     rdfs:comment "A desired Outcome expressed as a Proposition." ;
