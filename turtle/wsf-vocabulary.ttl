@@ -337,6 +337,21 @@ wsf:Service a wsf:Concept ;
     dcterms:created "2026-08-29T00:00:00Z"^^xsd:dateTime ;
     dcterms:modified "2026-08-29T00:00:00Z"^^xsd:dateTime .
 
+
+
+# Network ; per ADR-WSF-37 + CR-WSF-37 ; Tier 3 Baseline ; parent wsf:System
+wsf:Network
+  a owl:Class ;
+  rdfs:subClassOf wsf:System ;
+  rdfs:label "Network"@en ;
+  rdfs:comment """A structural topology of interconnected entities, nodes, and links whose identity is defined by the connection structure. Network has connection-identity (vs System's bounded-identity and Ecosystem's context-sharing-emergent-identity). Per ADR-WSF-37 section 2. Network does not require AI ; per ADR-WSF-37 section 5.""" .
+
+# Closed Loop ; per ADR-WSF-38 + CR-WSF-38 ; Tier 3 Baseline ; parent wsf:Process
+wsf:ClosedLoop
+  a owl:Class ;
+  rdfs:subClassOf wsf:Process ;
+  rdfs:label "Closed Loop"@en ;
+  rdfs:comment """A control structure with four stages (sense, decide, act, learn) connected by feedback such that the output of act influences subsequent sense iterations. Distinct from Workflow (no feedback requirement) and Operations (no loop requirement). Per ADR-WSF-38 section 2. Variant formulations (OODA, PDCA) accommodated as profile families. Closed Loop does not require AI ; per ADR-WSF-38 section 4.""" .
 wsf:Product a wsf:Concept ;
     rdfs:label "Product" ;
     rdfs:comment "A coherent, governable bundle of Functions and Services offered by an Entity for exchange, consumption, or value realization by other Entities." ;
