@@ -11,7 +11,9 @@
 # Implements ADR-WSF-23 §4 (Canonical Encoding Layer) Turtle representation
 # of the 38 WSF concepts.
 #
-# Status: All 38 concepts in Baseline status per SEMANTIC-STATUS-MODEL.
+# Status: 36 concepts in Baseline status per SEMANTIC-STATUS-MODEL.
+# Network + Closed Loop removed 2026-09-28 per user-authoritative model.
+# ADR-WSF-37 + ADR-WSF-38 Deprecated. See ES-031/032/034/035.
 ################################################################################
 
 # =============================================================================
@@ -339,19 +341,17 @@ wsf:Service a wsf:Concept ;
 
 
 
-# Network ; per ADR-WSF-37 + CR-WSF-37 ; Tier 3 Baseline ; parent wsf:System
-wsf:Network
-  a owl:Class ;
-  rdfs:subClassOf wsf:System ;
-  rdfs:label "Network"@en ;
-  rdfs:comment """A structural topology of interconnected entities, nodes, and links whose identity is defined by the connection structure. Network has connection-identity (vs System's bounded-identity and Ecosystem's context-sharing-emergent-identity). Per ADR-WSF-37 section 2. Network does not require AI ; per ADR-WSF-37 section 5.""" .
-
-# Closed Loop ; per ADR-WSF-38 + CR-WSF-38 ; Tier 3 Baseline ; parent wsf:Process
-wsf:ClosedLoop
-  a owl:Class ;
-  rdfs:subClassOf wsf:Process ;
-  rdfs:label "Closed Loop"@en ;
-  rdfs:comment """A control structure with four stages (sense, decide, act, learn) connected by feedback such that the output of act influences subsequent sense iterations. Distinct from Workflow (no feedback requirement) and Operations (no loop requirement). Per ADR-WSF-38 section 2. Variant formulations (OODA, PDCA) accommodated as profile families. Closed Loop does not require AI ; per ADR-WSF-38 section 4.""" .
+# Network and Closed Loop removed 2026-09-28 per user-authoritative model.
+#
+# Per user-authoritative model ;;; Network is realized as two ES-canonical
+# concepts (ES-031 Agentic Network + ES-032 Autonomous Network) at
+# Enterprise-Semantics ;;; and Closed Loop is realized as two ES-canonical
+# concepts (ES-034 behavioral_pattern + ES-035 behavioral_pattern_specialization).
+#
+# ADR-WSF-37 + ADR-WSF-38 remain Deprecated in wsf-governance (PR #20).
+#
+# WSF retains wsf:Entity (Tier 1) and wsf:System + wsf:Process (Tier 3) as
+# generic foundations for ES specialization.
 wsf:Product a wsf:Concept ;
     rdfs:label "Product" ;
     rdfs:comment "A coherent, governable bundle of Functions and Services offered by an Entity for exchange, consumption, or value realization by other Entities." ;
