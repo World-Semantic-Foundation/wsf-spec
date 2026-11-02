@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-specs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install RDF tooling
+        run: pip install rdflib pyshacl
+
+      - name: Parse Turtle vocabulary
+        run: |
+          python3 - <<'EOF'
+          from rdflib import Graph
+          g = Graph()
+          g.parse("turtle/wsf-vocabulary.ttl", format="turtle")
+          classes = set(g.subjects(predicate=None, object=None))
+          print(f"wsf-vocabulary.ttl parsed: {len(g)} triples")
+          EOF
+
+      - name: Parse SHACL shapes
+        run: |
+          python3 - <<'EOF'
+          from rdflib import Graph
+          g = Graph()
+          g.parse("shacl/wsf-shapes.ttl", format="turtle")
+          print(f"wsf-shapes.ttl parsed: {len(g)} triples")
+          EOF
+
+      - name: Parse OpenAPI spec
+        run: |
+          pip install pyyaml
+          python3 - <<'EOF'
+          import yaml
+          with open("openapi/wsf-semantic-engine.openapi.yaml") as f:
+              spec = yaml.safe_load(f)
+          assert spec.get("openapi", "").startswith("3."), "OpenAPI version must be 3.x"
+          print(f"OpenAPI {spec['openapi']} parsed: {len(spec.get('paths', {}))} paths")
+          EOF
+
+      - name: Consistency check: concepts in vocabulary are covered by shapes
+        run: |
+          python3 - <<'EOF'
+          from rdflib import Graph, Namespace, RDF, URIRef
+          WSF = Namespace("https://worldsemanticfoundation.org/ns/wsfc#")
+          SH = Namespace("http://www.w3.org/ns/shacl#")
+          vocab = Graph().parse("turtle/wsf-vocabulary.ttl", format="turtle")
+          shapes = Graph().parse("shacl/wsf-shapes.ttl", format="turtle")
+          vocab_classes = set(vocab.subjects(RDF.type, URIRef(str(WSF) + "Class")))
+          shape_targets = set()
+          for s in shapes.subjects(RDF.type, SH.NodeShape):
+              for t in shapes.objects(s, SH.targetClass):
+                  shape_targets.add(t)
+          missing = vocab_classes - shape_targets
+          if missing:
+              print(f"NOTE: {len(missing)} vocabulary classes have no SHACL NodeShape target:")
+              for m in sorted(str(x) for x in missing):
+                  print(f"  - {m}")
+          else:
+              print("All vocabulary classes covered by shapes")
+          EOF
