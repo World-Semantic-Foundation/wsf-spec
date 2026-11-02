@@ -48,6 +48,22 @@ jobs:
           print(f"OpenAPI {spec['openapi']} parsed: {len(spec.get('paths', {}))} paths")
           EOF
 
+      - name: Parse JSON-LD context and check vocabulary coverage
+        run: |
+          python3 - <<'EOF'
+          import json
+          from rdflib import Graph, Namespace, RDF
+          with open("jsonld/wsf-context.jsonld") as f:
+              ctx = json.load(f)["@context"]
+          g = Graph().parse("turtle/wsf-vocabulary.ttl", format="turtle")
+          WSF = Namespace("https://world-semantic-foundation.org/ns/")
+          concepts = {str(s).rsplit("/", 1)[-1] for s in g.subjects(RDF.type, WSF.Concept)}
+          missing = concepts - set(ctx.keys())
+          if missing:
+              raise SystemExit(f"vocabulary concepts missing from JSON-LD context: {sorted(missing)}")
+          print(f"JSON-LD context OK: {len(ctx)} terms cover all {len(concepts)} vocabulary concepts")
+          EOF
+
       - name: Consistency check: concepts in vocabulary are covered by shapes
         run: |
           python3 - <<'EOF'

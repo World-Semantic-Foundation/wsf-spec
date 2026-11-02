@@ -32,6 +32,12 @@ The OpenAPI spec covers all REST endpoints of the WSF Semantic Engine with full 
 
 The SHACL shapes cover Concept, Relationship, Assertion, Provenance, Validity, Proposition, and Evidence. Each shape enforces CURIE patterns, ISO 8601 timestamps, status enum membership, and closed-shape constraints (no additional properties).
 
+### JSON-LD Context (`jsonld/`)
+
+- `wsf-context.jsonld` : the JSON-LD context for all WSF namespaces and terms
+
+The context maps the 7 WSF namespaces (wsf, wsf-rel, wsf-ctx, wsf-ex, wsf-assertion, wsf-evidence), all 39 vocabulary concepts, the core vocabulary predicates, and the 29 foundational relationships (per ADR-WSF-19 §12) to their canonical IRIs. It is the required `@context` for the JSON-LD content types of the REST API (ADR-WSF-24 §7.1) and for any federation partner consuming WSF semantics.
+
 ### Protocol Buffers (`protobuf/`)
 
 - `wsf-semantic-engine.proto` : gRPC service definitions for high-throughput consumers
