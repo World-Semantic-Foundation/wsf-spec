@@ -1,0 +1,173 @@
+{
+  "@context": {
+    "wsf": "https://world-semantic-foundation.org/ns/",
+    "wsf-rel": "https://world-semantic-foundation.org/ns/rel/",
+    "wsf-ctx": "https://world-semantic-foundation.org/ns/ctx/",
+    "wsf-ex": "https://world-semantic-foundation.org/ns/examples/",
+    "wsf-assertion": "https://world-semantic-foundation.org/ns/assertions/",
+    "wsf-evidence": "https://world-semantic-foundation.org/ns/evidence/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "label": {
+      "@id": "rdfs:label",
+      "@language": "en"
+    },
+    "comment": {
+      "@id": "rdfs:comment",
+      "@language": "en"
+    },
+    "Activity": {
+      "@id": "wsf:Activity"
+    },
+    "Actor": {
+      "@id": "wsf:Actor"
+    },
+    "Assertion": {
+      "@id": "wsf:Assertion"
+    },
+    "Authority": {
+      "@id": "wsf:Authority"
+    },
+    "Capability": {
+      "@id": "wsf:Capability"
+    },
+    "Concept": {
+      "@id": "wsf:Concept"
+    },
+    "Constraint": {
+      "@id": "wsf:Constraint"
+    },
+    "Context": {
+      "@id": "wsf:Context"
+    },
+    "Definition": {
+      "@id": "wsf:Definition"
+    },
+    "Disposition": {
+      "@id": "wsf:Disposition"
+    },
+    "Entity": {
+      "@id": "wsf:Entity"
+    },
+    "Event": {
+      "@id": "wsf:Event"
+    },
+    "Evidence": {
+      "@id": "wsf:Evidence"
+    },
+    "Function": {
+      "@id": "wsf:Function"
+    },
+    "Goal": {
+      "@id": "wsf:Goal"
+    },
+    "Identifier": {
+      "@id": "wsf:Identifier"
+    },
+    "Identity": {
+      "@id": "wsf:Identity"
+    },
+    "Measure": {
+      "@id": "wsf:Measure"
+    },
+    "Namespace": {
+      "@id": "wsf:Namespace"
+    },
+    "Objective": {
+      "@id": "wsf:Objective"
+    },
+    "Organisation": {
+      "@id": "wsf:Organisation"
+    },
+    "Outcome": {
+      "@id": "wsf:Outcome"
+    },
+    "Policy": {
+      "@id": "wsf:Policy"
+    },
+    "Process": {
+      "@id": "wsf:Process"
+    },
+    "Product": {
+      "@id": "wsf:Product"
+    },
+    "Proposition": {
+      "@id": "wsf:Proposition"
+    },
+    "Provenance": {
+      "@id": "wsf:Provenance"
+    },
+    "Reference": {
+      "@id": "wsf:Reference"
+    },
+    "Relationship": {
+      "@id": "wsf:Relationship"
+    },
+    "Resource": {
+      "@id": "wsf:Resource"
+    },
+    "Role": {
+      "@id": "wsf:Role"
+    },
+    "Rule": {
+      "@id": "wsf:Rule"
+    },
+    "Service": {
+      "@id": "wsf:Service"
+    },
+    "Space": {
+      "@id": "wsf:Space"
+    },
+    "State": {
+      "@id": "wsf:State"
+    },
+    "System": {
+      "@id": "wsf:System"
+    },
+    "Term": {
+      "@id": "wsf:Term"
+    },
+    "Time": {
+      "@id": "wsf:Time"
+    },
+    "Validity": {
+      "@id": "wsf:Validity"
+    },
+    "authority": "wsf:authority",
+    "parent": "wsf:parent",
+    "status": "wsf:status",
+    "tier": "wsf:tier",
+    "version": "wsf:version",
+    "after": "wsf-rel:after",
+    "asserted-by": "wsf-rel:asserted-by",
+    "asserts": "wsf-rel:asserts",
+    "assumes-role": "wsf-rel:assumes-role",
+    "authorizes": "wsf-rel:authorizes",
+    "before": "wsf-rel:before",
+    "causes": "wsf-rel:causes",
+    "contains": "wsf-rel:contains",
+    "contributes-to": "wsf-rel:contributes-to",
+    "derived-from": "wsf-rel:derived-from",
+    "during": "wsf-rel:during",
+    "enables": "wsf-rel:enables",
+    "governs": "wsf-rel:governs",
+    "has-capability": "wsf-rel:has-capability",
+    "has-part": "wsf-rel:has-part",
+    "holds-during": "wsf-rel:holds-during",
+    "instantiates": "wsf-rel:instantiates",
+    "is-part-of": "wsf-rel:is-part-of",
+    "obligates": "wsf-rel:obligates",
+    "permits": "wsf-rel:permits",
+    "possesses": "wsf-rel:possesses",
+    "produces": "wsf-rel:produces",
+    "prohibits": "wsf-rel:prohibits",
+    "realizes": "wsf-rel:realizes",
+    "same-as": "wsf-rel:same-as",
+    "specializes": "wsf-rel:specializes",
+    "supersedes": "wsf-rel:supersedes",
+    "supported-by": "wsf-rel:supported-by",
+    "triggers": "wsf-rel:triggers"
+  }
+}
