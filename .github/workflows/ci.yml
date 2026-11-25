@@ -64,7 +64,7 @@ jobs:
           print(f"JSON-LD context OK: {len(ctx)} terms cover all {len(concepts)} vocabulary concepts")
           EOF
 
-      - name: Consistency check: concepts in vocabulary are covered by shapes
+      - name: Consistency check (concepts vs shapes coverage)
         run: |
           python3 - <<'EOF'
           from rdflib import Graph, Namespace, RDF, URIRef
